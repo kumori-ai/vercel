@@ -12,7 +12,7 @@ python3 gateway.py credits   balance and total used
 ## Why
 
 I run a pool of free-tier LLMs behind one router ([kumori.ai](https://kumori.ai)), and one of the
-things it feeds is [sparebrains](https://github.com/tillo13/sparebrains): idle free compute pointed
+things it feeds is [sparebrains](https://github.com/kumori-ai/sparebrains): idle free compute pointed
 at competition math, where a Lean 4 kernel, not a person and not another model, decides what counts.
 The pool only takes lanes that cost nothing, so every provider gets the same question: which of your
 models are actually priced at zero, and does "zero" survive a real call?
@@ -57,7 +57,7 @@ The four `-free` ids are lanes in the pool as `vercel-minimax-m3-free`, `vercel-
 `vercel-laguna-s-2-1-free` and `vercel-ling-3-0-flash-fin-free`. The router's health probe passed all
 four on 2026-09-02, and sparebrains' ladder draws from the same list, so from its next run they are
 attempting Lean proofs alongside the other free lanes. Every attempt lands in the
-[committed ledger](https://github.com/tillo13/sparebrains/tree/main/ledger) with the lane name on it,
+[committed ledger](https://github.com/kumori-ai/sparebrains/tree/main/ledger) with the lane name on it,
 and the live view is at [sparebrains.kumori.ai/lanes](https://sparebrains.kumori.ai/lanes). Whether a
 zero-cost lane earns its place is decided the same way as every other lane: by the kernel.
 
@@ -86,3 +86,15 @@ python3 gateway.py ping
 
 `ping` calls only the models the catalog prices at zero, with `max_tokens` 8, and prints the
 gateway's own cost figure for each. Set a budget on the key anyway.
+
+## Tests
+
+```
+python3 -m unittest test_gateway
+```
+
+No network and no key: the gateway's answers are faked. They check that only models priced zero on
+both input and output count as free, that `ping` sends nothing but 8-token calls to free language
+models, and that a missing key stops before any call.
+
+Part of [Kumori's tools](https://github.com/kumori-ai/tools).
